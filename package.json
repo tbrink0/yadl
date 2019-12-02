@@ -8,11 +8,15 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --open"
   },
-  "author": "Timothy Brink",
+  "author": "Timothy Brink <contact@timothybrink.dev> (https://timothybrink.dev)",
   "license": "MIT",
   "devDependencies": {
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.9.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tbrink0/visual-html.git"
   }
 }
