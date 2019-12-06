@@ -4,4 +4,4 @@ yadl is a tiny DOM library, created specifically for my Visual HTML editor. The 
 
 # Use
 
-Right now if you want to use this you will have to clone the source and build the library from source (npm run build)
+`npm install @tbrink/yadl`

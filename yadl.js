@@ -1,8 +1,11 @@
+const yadl = {}
+
+yadl.document = window.document
+
 /**
- * The base VElement class.
- * Just needs to do stuff to the dom and call hooks when it does so.
+ * The base yadl.Element class.
  */
-export default class VElement {
+yadl.Element = class {
   /**
    * @param {string} type The type of the element to create. Passed to document.createElement.
    */
@@ -15,13 +18,6 @@ export default class VElement {
     this.hooks = []
     this.isMounted = false
     this.document = doc
-  }
-
-  static wrap(htmlElement) {
-    let vElement = new VElement()
-    vElement._element = htmlElement
-    vElement.document = htmlElement.ownerDocument || htmlElement  // If the document is null, hopefully the element is a Document instance
-    return vElement
   }
 
   /**
@@ -107,21 +103,25 @@ export default class VElement {
       return []
 
     if (elements.length == 1)
-      return VElement.wrap(elements[0])
+      return yadl.wrap(elements[0])
 
-    return elements.map(VElement.wrap)
+    return elements.map(yadl.wrap)
   }
 
   /**
    * Append a new child to this element
-   * @param {VElement} element The element to append to this element
+   * @param {yadl.Element} element The element to append to this element
    */
   append(element) {
     if (element.isMounted)
       throw new Error('Element already mounted')
 
-    this._element.appendChild(element._element)
-    element.isMounted = true
+    if (element._element) {
+      this._element.appendChild(element._element)
+      element.isMounted = true
+    } else {
+      this._element.appendChild(element)
+    }
 
     let appendHook = this.hooks.find(i => i.attr = 'newChild')
     if (appendHook)
@@ -132,7 +132,7 @@ export default class VElement {
 
   /**
    * Attach this element to a parent
-   * @param {VElement} parent The parent to attach this element to
+   * @param {yadl.Element} parent The parent to attach this element to
    */
   attach(parent) {
     if (!parent)
@@ -155,4 +155,20 @@ export default class VElement {
 
     return this
   }
+}
+
+yadl.wrap = function (htmlElement) {
+  let vElement = new yadl.Element()
+  vElement._element = htmlElement
+  vElement.document = htmlElement.ownerDocument || htmlElement  // If the document is null, hopefully the element is a Document instance
+  return vElement
+}
+
+yadl.create = function (type) {
+  return new yadl.Element(type, yadl.document)
+}
+
+yadl.select = function (query) {
+  return yadl.wrap(yadl.document)
+    .select(query)
 }

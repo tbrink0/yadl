@@ -1,20 +1,13 @@
 {
-  "name": "yadl",
+  "name": "@tbrink/yadl",
   "version": "1.0.0",
   "description": "Yet Another DOM Library",
-  "main": "dist/yadl.js",
+  "main": "yadl.js",
   "scripts": {
-    "build": "webpack --config prod.config.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --open"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Timothy Brink <contact@timothybrink.dev> (https://timothybrink.dev)",
   "license": "MIT",
-  "devDependencies": {
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.9.0"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/timothybrink/yadl.git"
