@@ -1,6 +1,7 @@
 const yadl = {}
 
-yadl.document = window.document
+if (typeof window != 'undefined')
+  yadl.document = window.document
 
 /**
  * The base yadl.Element class.
@@ -172,3 +173,5 @@ yadl.select = function (query) {
   return yadl.wrap(yadl.document)
     .select(query)
 }
+
+module.exports = yadl
