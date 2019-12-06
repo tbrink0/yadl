@@ -156,6 +156,15 @@ yadl.Element = class {
 
     return this
   }
+
+  /**
+   * Return the children of this element, wrapped.
+   */
+  get children() {
+    let children = this._element.children
+
+    return Array.prototype.map.call(children, i => yadl.wrap(i))
+  }
 }
 
 yadl.wrap = function (htmlElement) {
