@@ -106,7 +106,7 @@ yadl.Element = class {
     if (elements.length == 1)
       return yadl.wrap(elements[0])
 
-    return elements.map(yadl.wrap)
+    return Array.prototype.map.call(elements, yadl.wrap)
   }
 
   /**
@@ -163,7 +163,14 @@ yadl.Element = class {
   get children() {
     let children = this._element.children
 
-    return Array.prototype.map.call(children, i => yadl.wrap(i))
+    return Array.prototype.map.call(children, yadl.wrap)
+  }
+
+  /**
+   * Expose the native classList API
+   */
+  get classList() {
+    return this._element.classList
   }
 }
 
