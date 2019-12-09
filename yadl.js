@@ -172,6 +172,10 @@ yadl.Element = class {
   get classList() {
     return this._element.classList
   }
+
+  remove() {
+    this._element.remove()
+  }
 }
 
 yadl.wrap = function (htmlElement) {
