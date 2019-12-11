@@ -61,6 +61,11 @@ yadl.Element = class {
     return this
   }
 
+  /**
+   * Setter for Element.style properties
+   * @param {string} name The name of the CSS property to set
+   * @param {any} value The value to set the property to
+   */
   style(name, value) {
     if (!(name in this._element.style)) {
       throw new Error(`${name} is not defined in this style object`)
