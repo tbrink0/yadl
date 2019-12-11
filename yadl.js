@@ -82,6 +82,21 @@ yadl.Element = class {
   }
 
   /**
+   * Setter for Element.textContent
+   * @param {string} value The value to set Element.textContent to
+   */
+  text(value) {
+    this._element.textContent = value
+
+    let hook = this.hooks.find(i => i.attr == 'textContent')
+    if (hook) {
+      hook.handler('textContent', value)
+    }
+
+    return this
+  }
+
+  /**
    * Add hooks
    * @param {string} attr The attribute to listen on
    * @param {function} handler The handler to execute
