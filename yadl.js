@@ -243,6 +243,11 @@ yadl.Element = class {
    */
   remove() {
     this._element.remove()
+    this.isMounted = false
+
+    let hook = this.hooks.find(i => i.attr == 'remove')
+    if (hook)
+      hook.handler('remove', null)
   }
 }
 
