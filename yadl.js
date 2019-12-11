@@ -223,7 +223,9 @@ yadl.Element = class {
    */
   init() {
     Array.from(this._element.children).forEach(child => {
-      this._children.push(yadl.wrap(child).init())
+      let newYElt = yadl.wrap(child).init()
+      newYElt._parent = this
+      this._children.push(newYElt)
     })
 
     return this
