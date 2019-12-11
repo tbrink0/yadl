@@ -23,6 +23,7 @@ yadl.Element = class {
       this._element = null
 
     this._children = []
+    this._parent = null
 
     this.hooks = []
     this.isMounted = false
@@ -177,11 +178,18 @@ yadl.Element = class {
       this._element.appendChild(element._element)
       element.isMounted = true
 
-      if (yadl.persistant) this._children.push(element)
+      if (yadl.persistant) {
+        this._children.push(element)
+        element._parent = this
+      }
     } else {
       this._element.appendChild(element)
 
-      if (yadl.persistant) this._children.push(yadl.wrap(element))
+      if (yadl.persistant) {
+        let yadlElt = yadl.wrap(element)
+        yadlElt._parent = this
+        this._children.push(yadlElt)
+      }
     }
 
     let appendHook = this.hooks.find(i => i.attr = 'newChild')
@@ -232,6 +240,16 @@ yadl.Element = class {
   }
 
   /**
+   * Return the parent of this element, wrapped.
+   */
+  get parent() {
+    if (!yadl.persistant)
+      return yadl.wrap(this._element.parentElement)
+    else
+      return this._parent
+  }
+
+  /**
    * Expose the native classList API
    */
   get classList() {
@@ -242,12 +260,37 @@ yadl.Element = class {
    * Wrapper for native remove()
    */
   remove() {
-    this._element.remove()
-    this.isMounted = false
+    this.parent.removeChild(this)
 
     let hook = this.hooks.find(i => i.attr == 'remove')
     if (hook)
       hook.handler('remove', null)
+  }
+
+  /**
+   * Wrapper for native removeChild()
+   * @param {Element} childNode The child to remove
+   */
+  removeChild(childNode) {
+    if (childNode._element)
+      this._element.removeChild(childNode._element)
+    else
+      this._element.removeChild(childNode)
+
+    if (yadl.persistant && childNode._element) {
+      let index = this._children.indexOf(childNode)
+
+      if (index === -1)
+        throw new Error('childNode not found in Element.removeChild call')
+      else
+        this._children.splice(index, 1)
+    }
+
+    let hook = this.hooks.find(i => i.attr == 'removeChild')
+    if (hook)
+      hook.handler('removeChild', null)
+    
+    return this
   }
 }
 
