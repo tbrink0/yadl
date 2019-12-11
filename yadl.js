@@ -54,7 +54,7 @@ yadl.Element = class {
   }
 
   style(name, value) {
-    if(!(name in this._element.style)) {
+    if (!(name in this._element.style)) {
       throw new Error(`${name} is not defined in this style object`)
     }
 
