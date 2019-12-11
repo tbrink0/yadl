@@ -3,6 +3,12 @@ const yadl = {}
 if (typeof window != 'undefined')
   yadl.document = window.document
 
+// Flag for in-memory persistance of the vDom
+yadl.persistant = false
+
+// The root element for a vDom
+yadl.root = null
+
 /**
  * The base yadl.Element class.
  */
@@ -15,6 +21,8 @@ yadl.Element = class {
       this._element = document.createElement(type)
     else
       this._element = null
+
+    this._children = []
 
     this.hooks = []
     this.isMounted = false
@@ -98,15 +106,43 @@ yadl.Element = class {
    * @param {string} query The query to search
    */
   select(query) {
-    let elements = this._element.querySelectorAll(query)
+    let elements = []
+
+    if (yadl.persistant) {
+      if (this.matches(query)) elements.push(this)
+
+      let selectResults = this._children.map(i => i.select(query))
+      selectResults.forEach(i => {
+        if (i.length === 0)
+          return
+        else if (typeof i.length === 'undefined')
+          elements.push(i)
+        else
+          elements = elements.concat(i)
+      })
+    } else {
+      let rawElements = Array.from(this._element.querySelectorAll(query))
+      elements = rawElements.map(yadl.wrap)
+    }
 
     if (elements.length == 0)
       return []
 
     if (elements.length == 1)
-      return yadl.wrap(elements[0])
+      return elements[0]
 
-    return Array.prototype.map.call(elements, yadl.wrap)
+    return elements
+  }
+
+  /**
+   * Wrapper for Element.matches
+   * @param {string} query The selector to check
+   */
+  matches(query) {
+    if (this._element.matches)
+      return this._element.matches(query)
+    else
+      return false
   }
 
   /**
@@ -120,8 +156,12 @@ yadl.Element = class {
     if (element._element) {
       this._element.appendChild(element._element)
       element.isMounted = true
+
+      if (yadl.persistant) this._children.push(element)
     } else {
       this._element.appendChild(element)
+
+      if (yadl.persistant) this._children.push(yadl.wrap(element))
     }
 
     let appendHook = this.hooks.find(i => i.attr = 'newChild')
@@ -137,7 +177,7 @@ yadl.Element = class {
    */
   attach(parent) {
     if (!parent)
-      parent = this.document.body
+      parent = yadl.root ? yadl.root.body : this.document.body
 
     if (this.isMounted)
       throw new Error('Element already mounted')
@@ -145,14 +185,18 @@ yadl.Element = class {
     if (typeof parent._element == 'undefined')
       parent.appendChild(this._element)
     else
-      parent._element.appendChild(this._element)
-    this.isMounted = true
+      parent.append(this)
 
-    if (typeof parent.hooks != 'undefined') {
-      let appendHook = parent.hooks.find(i => i.attr == 'newChild')
-      if (appendHook)
-        appendHook.handler('newChild', this)
-    }
+    return this
+  }
+
+  /**
+   * Initiates the vDom for this element
+   */
+  init() {
+    Array.from(this._element.children).forEach(child => {
+      this._children.push(yadl.wrap(child).init())
+    })
 
     return this
   }
@@ -161,9 +205,10 @@ yadl.Element = class {
    * Return the children of this element, wrapped.
    */
   get children() {
-    let children = this._element.children
-
-    return Array.prototype.map.call(children, yadl.wrap)
+    if (!this._children.length)
+      return Array.prototype.map.call(this._element.children, yadl.wrap)
+    else
+      return this._children
   }
 
   /**
@@ -193,8 +238,32 @@ yadl.create = function (type) {
 }
 
 yadl.select = function (query) {
-  return yadl.wrap(yadl.document)
+  if (yadl.root)
+    return yadl.root.select(query)
+  else
+    return yadl.wrap(yadl.document)
     .select(query)
 }
 
-module.exports = yadl
+/**
+ * Initializes a persistant vDom. Sets persistant to true,
+ * parses the document into a vDom, and sets yadl.root.
+ * @param {Document} document   The document to initialize.
+ */
+yadl.init = function (document) {
+  if (!document) {
+    document = yadl.document
+  } else {
+    yadl.document = document
+  }
+
+  yadl.persistant = true
+
+  yadl.root = yadl.wrap(document)
+
+  yadl.root.init()
+  yadl.root.body = yadl.select('body')
+}
+
+if (typeof module !== 'undefined')
+  module.exports = yadl
