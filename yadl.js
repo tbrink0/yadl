@@ -173,6 +173,9 @@ yadl.Element = class {
     return this._element.classList
   }
 
+  /**
+   * Wrapper for native remove()
+   */
   remove() {
     this._element.remove()
   }
