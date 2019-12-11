@@ -184,7 +184,7 @@ yadl.Element = class {
 yadl.wrap = function (htmlElement) {
   let vElement = new yadl.Element()
   vElement._element = htmlElement
-  vElement.document = htmlElement.ownerDocument || htmlElement  // If the document is null, hopefully the element is a Document instance
+  vElement.document = htmlElement.ownerDocument || htmlElement  // If the ownerDocument is null, hopefully the element is a Document instance
   return vElement
 }
 
