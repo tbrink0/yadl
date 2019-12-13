@@ -43,7 +43,7 @@ yadl.Element = class {
   }
 
   /**
-   * set element property
+   * Set element property
    * @param {string} name The property to update
    * @param {any} value The value to update to
    */
