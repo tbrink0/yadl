@@ -4,7 +4,7 @@
   "description": "Yet Another DOM Library",
   "main": "yadl.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha yadl.test.js"
   },
   "author": "Timothy Brink <contact@timothybrink.dev> (https://timothybrink.dev)",
   "license": "MIT",
@@ -15,5 +15,13 @@
   "bugs": {
     "url": "https://github.com/timothybrink/yadl/issues"
   },
-  "homepage": "https://github.com/timothybrink/yadl#readme"
+  "homepage": "https://github.com/timothybrink/yadl#readme",
+  "devDependencies": {
+    "jsdom": "^15.2.1",
+    "jsdom-global": "^3.0.2",
+    "mocha": "^6.2.2"
+  },
+  "mocha": {
+    "require": "jsdom-global/register"
+  }
 }
