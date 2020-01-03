@@ -63,6 +63,16 @@ yadl.Element = class {
   }
 
   /**
+   * Wrapper for the native Element.setAttribute.
+   * @param {string} name The name of HTML attribute to set
+   * @param {string} value The value to set
+   */
+  setAttribute(name, value) {
+    this._element.setAttribute(name, value)
+    return this
+  }
+
+  /**
    * Setter for Element.style properties
    * @param {string} name The name of the CSS property to set
    * @param {any} value The value to set the property to
