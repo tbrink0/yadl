@@ -31,7 +31,7 @@ yadl.Element = class {
   }
 
   /**
-   * Get element property
+   * Get HTMLElement property
    * @param {string} name The property to look up
    */
   get(name) {
@@ -43,7 +43,7 @@ yadl.Element = class {
   }
 
   /**
-   * Set element property
+   * Set HTMLElement property
    * @param {string} name The property to update
    * @param {any} value The value to update to
    */
