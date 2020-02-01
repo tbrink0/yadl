@@ -25,7 +25,7 @@ The global object has the following properties and methods:
 This is the class that every element you create, select, or wrap with yadl takes on.
 
 Constructor
- - `yadl.Element(type, doc)` - Creates a new yadl.Element with the given type (or tag name), which is passed directly to `document.createElement()`, and parent document. Generally you shouldn't need to use this constructor directly; `yadl.create()` is simpler and takes care of the document for you.
+ - `yadl.Element(type, doc)` - Creates a new yadl.Element with the given type and parent document. The type argument is parsed for tagname, id, and classes, so you can pass in things like `'#main.class'` and `'button.some-class'`. If the tag is omitted, a div will be used. Generally you shouldn't need to use this constructor directly; `yadl.create()` is simpler and takes care of the document for you.
 
 Properties:
 
@@ -61,6 +61,6 @@ Also, all these functions except for the remove() function return `this`, meanin
 
 ## Methods
  - `yadl.wrap(htmlElement)` - Returns htmlElement, wrapped in a `yadl.Element` instance.
- - `yadl.create(type)` - Returns a new `yadl.Element` instance to be manipulated and attached/appended as you like. The type argument is passed directly to `document.createElement()`.
+ - `yadl.create(type)` - Returns a new `yadl.Element` instance to be manipulated and attached/appended as you like. The type argument is passed directly to `yadl.Element()`, so you can pass in strings like `'.class'` and `'a#main.class'` (see description above).
  - `yadl.select(query)` - Returns the result of `yadl.wrap(yadl.document).select(query)` in non-persistant mode or `yadl.root.select(query)` in persistant mode. This means that in non-persistant mode it will return a newly-wrapped `yadl.Element` instance(s), whereas in persistant mode it will return the persistant `yadl.Element` instance(s) associated with that selector.
  - `yadl.init(document)` - Turns on persistent mode. This is the best way to turn on persistent mode if you want it. yadl.document is set to the document argument. Also walks the DOM tree and puts it all into the virtual DOM (found at yadl.root). 
