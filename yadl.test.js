@@ -56,7 +56,7 @@ describe('yadl', function () {
 describe('yadl.Element', function () {
   describe('#get()', function () {
     it('returns without error', function () {
-      let e = new yadl.Element('div', window.document)
+      let e = yadl.create('div')
       assert.equal(e.get('tagName'), 'DIV')
     })
   })
@@ -98,17 +98,17 @@ describe('yadl.Element', function () {
   describe('#addHook()', function () {
     it('returns this', function () {
       let e = yadl.create('div')
-      assert.equal(e.addHook('textContent', function () {}), e)
+      assert.equal(e.addHook('textContent', function () { }), e)
     })
 
     it('adds hook to this.hooks', function () {
-      let e = yadl.create('div').addHook('textContent', function () {})
+      let e = yadl.create('div').addHook('textContent', function () { })
       assert(e.hooks.length)
     })
 
     it('throws with bad attr', function () {
       assert.throws(() => {
-        yadl.create('div').addHook(0, function () {})
+        yadl.create('div').addHook(0, function () { })
       })
     })
 
@@ -122,10 +122,10 @@ describe('yadl.Element', function () {
   describe('#listen()', function () {
     it('returns this', function () {
       let e = yadl.create('div')
-      assert.equal(e.listen('click', function () {}), e)
+      assert.equal(e.listen('click', function () { }), e)
     })
   })
-  
+
   describe('#matches()', function () {
     it('returns true with matching query', function () {
       assert.strictEqual(yadl.create('div').set('className', 'test').matches('div.test'), true)
