@@ -14,12 +14,62 @@ yadl.root = null
  */
 yadl.Element = class {
   /**
-   * @param {string} type The type of the element to create. Passed to document.createElement.
+   * Helper function to parse a CSS selector-like string
+   * into tagname, id, and classes components. The first
+   * part is assumed to be the tag name unless it is
+   * preceded by a # or ., in which case the tagname is
+   * assumed to be 'div'. If more than one #str is found,
+   * uses the first one as the id.
+   * @param {String} str The string to parse
+   * @returns {Object} {tagName, id, classes[]}
+   */
+  static parseTypeString(str) {
+    // Process string
+    let splitStr = str.split('#').map((s, i) => i == 1 ? '#' + s : s)
+    splitStr = splitStr.map(s => s.split('.').map((s2, i) => i != 0 ? '.' + s2 : s2))
+    splitStr = splitStr.flat()
+
+    // First element is tagname unless it begins with # or .,
+    // in which case tagname is 'div'.
+    let tagName
+    if (!splitStr[0])
+      tagName = 'div'
+    else
+      tagName = splitStr.splice(0, 1)[0]
+
+    let idIndex = splitStr.findIndex(s => s.startsWith('#'))
+    let id
+    if (idIndex >= 0) {
+      id = splitStr.splice(idIndex, 1)[0].slice(1)
+    }
+    let classes = []
+    for (let s of splitStr) {
+      // This should be true unless there is an extra #
+      if (s.startsWith('.')) {
+        classes.push(s.slice(1))
+      }
+    }
+
+    let result = { tagName }
+    if (id) result.id = id
+    if (classes.length) result.classes = classes
+
+    return result
+  }
+
+  /**
+   * Base element constructor. Not meant for general usage,
+   * Parses the type parameter for tagname, classes, and
+   * id (via yadl.Element.parseTypeString())
+   * @param {string} type The type of the element to create.
    */
   constructor(type, doc) {
-    if (type)
-      this._element = document.createElement(type)
-    else
+    if (type) {
+      let {tagName, id, classes} = yadl.Element.parseTypeString(type)
+      this._element = document.createElement(tagName)
+      if (id) this._element.id = id
+      if (classes) this._element.classList.add(...classes)
+    } else
       this._element = null
 
     this._children = []

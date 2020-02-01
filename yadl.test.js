@@ -54,6 +54,102 @@ describe('yadl', function () {
 })
 
 describe('yadl.Element', function () {
+  describe('.parseTypeString()', function () {
+    it('parses just a tagname properly', function () {
+      let result = yadl.Element.parseTypeString('div')
+      assert.deepStrictEqual(result, { tagName: 'div' })
+    })
+
+    it('parses a missing tagname as div', function () {
+      let result = yadl.Element.parseTypeString('')
+      assert.deepStrictEqual(result, { tagName: 'div' })
+    })
+
+    it('parses with only id', function () {
+      let result = yadl.Element.parseTypeString('#id')
+      assert.deepStrictEqual(result, { tagName: 'div', id: 'id' })
+    })
+
+    it('parses a tagname and an id properly', function () {
+      let result = yadl.Element.parseTypeString('span#id')
+      assert.deepStrictEqual(result, { tagName: 'span', id: 'id' })
+    })
+
+    it('uses the first id', function () {
+      let result = yadl.Element.parseTypeString('span#a#b')
+      assert.deepStrictEqual(result, { tagName: 'span', id: 'a' })
+    })
+
+    it('uses the first id with no tagname', function () {
+      let result = yadl.Element.parseTypeString('#a#b')
+      assert.deepStrictEqual(result, { tagName: 'div', id: 'a' })
+    })
+
+    it('parses with tagname and class', function () {
+      let result = yadl.Element.parseTypeString('span.c')
+      assert.deepStrictEqual(result, { tagName: 'span', classes: ['c'] })
+    })
+
+    it('parses with tagname and multiple classes', function () {
+      let result = yadl.Element.parseTypeString('span.a.b.c')
+      assert.deepStrictEqual(result, { tagName: 'span', classes: ['a', 'b', 'c'] })
+    })
+
+    it('parses with only a class', function () {
+      let result = yadl.Element.parseTypeString('.c')
+      assert.deepStrictEqual(result, { tagName: 'div', classes: ['c'] })
+    })
+
+    it('parses with no tag and multiple classes', function () {
+      let result = yadl.Element.parseTypeString('.a.b.c')
+      assert.deepStrictEqual(result, { tagName: 'div', classes: ['a', 'b', 'c'] })
+    })
+
+    it('parses with tag, class, and id', function () {
+      let result = yadl.Element.parseTypeString('span.c#id')
+      assert.deepStrictEqual(result, { tagName: 'span', id: 'id', classes: ['c'] })
+    })
+
+    it('parses with tag, id, and class', function () {
+      let result = yadl.Element.parseTypeString('span#id.c')
+      assert.deepStrictEqual(result, { tagName: 'span', id: 'id', classes: ['c'] })
+    })
+
+    it('parses with only class and id', function () {
+      let result = yadl.Element.parseTypeString('.c#id')
+      assert.deepStrictEqual(result, { tagName: 'div', id: 'id', classes: ['c'] })
+    })
+
+    it('parses with only id and class', function () {
+      let result = yadl.Element.parseTypeString('#id.c')
+      assert.deepStrictEqual(result, { tagName: 'div', id: 'id', classes: ['c'] })
+    })
+
+    it('parses with lots of stuff', function () {
+      let result = yadl.Element.parseTypeString('span#a#b.a.c.d.e')
+      assert.deepStrictEqual(result, { tagName: 'span', id: 'a', classes: ['a', 'c', 'd', 'e'] })
+    })
+  })
+
+  describe('constructor()', function () {
+    it('creates a null element with no arguments', function () {
+      let e = new yadl.Element()
+      assert.equal(e._element, null)
+    })
+
+    it('creates a valid element with arguments', function () {
+      let e = new yadl.Element('span')
+      assert.equal(e._element.tagName, 'SPAN')
+    })
+
+    it('works with css query selectors tag, id, class', function () {
+      let e = new yadl.Element('span#id.class')
+      assert.equal(e._element.tagName, 'SPAN')
+      assert.equal(e._element.id, 'id')
+      assert(e._element.classList.contains('class'))
+    })
+  })
+
   describe('#get()', function () {
     it('returns without error', function () {
       let e = yadl.create('div')
