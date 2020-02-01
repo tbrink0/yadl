@@ -304,6 +304,33 @@ yadl.Element = class {
     
     return this
   }
+
+  /**
+   * Wrapper for set Element.classList.add()
+   * @param  {...String} classes The classes to add
+   */
+  setClass(...classes) {
+    this._element.classList.add(...classes)
+    return this
+  }
+
+  /**
+   * Wrapper for Element.classList.remove()
+   * @param  {...STring} classes The classes to remove
+   */
+  removeClass(...classes) {
+    this._element.classList.remove(...classes)
+    return this
+  }
+
+  /**
+   * Wrapper for set Element.id
+   * @param {String} id The id to use
+   */
+  setId(id) {
+    this._element.id = id
+    return this
+  }
 }
 
 yadl.wrap = function (htmlElement) {

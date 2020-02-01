@@ -296,4 +296,57 @@ describe('yadl.Element', function () {
       yadl.persistant = false
     })
   })
+
+  describe('#setClass()', function () {
+    it('returns this', function () {
+      let e = yadl.create('div')
+      assert.equal(e.setClass('a'), e)
+    })
+
+    it('adds single class properly', function () {
+      let e = yadl.create('div')
+      e.setClass('a')
+      assert(e.classList.contains('a'))
+    })
+
+    it('adds multiple classes properly', function () {
+      let e = yadl.create('div')
+      e.setClass('a', 'b')
+      assert(e.classList.contains('a') && e.classList.contains('b'))
+    })
+  })
+
+  describe('#removeClass()', function () {
+    it('returns this', function () {
+      let e = yadl.create('div')
+      assert.equal(e.removeClass('a'), e)
+    })
+
+    it('removes single class properly', function () {
+      let e = yadl.create('div')
+      e._element.classList.add('a')
+      e.removeClass('a')
+      assert(e.classList.contains('a') === false)
+    })
+
+    it('removes multiple classes properly', function () {
+      let e = yadl.create('div')
+      e._element.classList.add('a', 'b')
+      e.removeClass('a', 'b')
+      assert((e.classList.contains('a') || e.classList.contains('b')) === false)
+    })
+  })
+
+  describe('#setId()', function () {
+    it('returns this', function () {
+      let e = yadl.create('div')
+      assert.equal(e.setId('a'), e)
+    })
+
+    it('sets id properly', function () {
+      let e = yadl.create('div')
+      e.setId('a')
+      assert.equal(e._element.id, 'a')
+    })
+  })
 })
