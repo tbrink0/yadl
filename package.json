@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/timothybrink/yadl#readme",
   "devDependencies": {
-    "jsdom": "^15.2.1",
+    "jsdom": "^16.5.0",
     "jsdom-global": "^3.0.2",
     "mocha": "^8.2.1"
   },
